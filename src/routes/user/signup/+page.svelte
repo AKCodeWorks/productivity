@@ -1,4 +1,23 @@
 <script lang="ts">
+  let name: string = "Test User";
+  let email: string;
+  let password: string;
+
+  const addUser = async () => {
+    const response = await fetch("/user/signup", {
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    console.log(response);
+  };
 </script>
 
 <div class="container mx-auto">
@@ -10,11 +29,13 @@
       <h1 class="text-center text-2xl font-bold">Signup</h1>
       <div class="mt-4 flex flex-col gap-2">
         <input
+          bind:value={email}
           class="border-b border-primary-blue-800 bg-transparent p-2 focus:outline-none"
           type="text"
           placeholder="E-Mail"
         />
         <input
+          bind:value={password}
           class="border-b border-primary-blue-800 bg-transparent p-2 focus:outline-none"
           type="text"
           placeholder="Password"
@@ -22,6 +43,7 @@
       </div>
       <div class="container mt-4 flex flex-col">
         <button
+          on:click={addUser}
           class="mx-auto mt-2 w-48 rounded-sm bg-primary-blue-700 px-6 py-2 text-slate-100 shadow-md active:bg-primary-blue-600 active:shadow-none"
           >Create Account</button
         >
