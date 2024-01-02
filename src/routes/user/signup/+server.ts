@@ -1,5 +1,8 @@
 import prisma from "$lib/db";
 import bcrypt from "bcrypt";
+import { serialize } from "cookie";
+import jwt from "jsonwebtoken";
+
 import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -22,14 +25,27 @@ export const POST: RequestHandler = async ({ request }) => {
       },
     });
 
-    if (!user) {
-      throw new Error("User not created");
+    if (!process.env.SECRET) {
+      throw new Error("Secret key is missing");
     }
 
-    // It's a good practice not to return the password hash
-    const { password: _, ...userWithoutPassword } = user;
+    const token = jwt.sign({ userId: user.id }, process.env.SECRET, {
+      expiresIn: "1h",
+    });
+    const cookieHeader = serialize("session", token, {
+      httpOnly: true,
+      maxAge: 60 * 60, // 1 hour in seconds
+      path: "/",
+      sameSite: "strict", // Adjust to your needs
+      secure: process.env.NODE_ENV === "production", // Secure in production
+    });
 
-    return new Response(JSON.stringify(userWithoutPassword));
+    return new Response(JSON.stringify(user), {
+      headers: {
+        "Set-Cookie": cookieHeader,
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     console.log("error", error);
     throw new Error(JSON.stringify(error));

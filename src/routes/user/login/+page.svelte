@@ -1,18 +1,34 @@
-<script lang="ts">
-  // +page
-  import { type HttpError } from "@sveltejs/kit";
+<script>
+  import { goto } from "$app/navigation";
   import { loginUser } from "$lib/login";
+  import { onMount } from "svelte";
 
-  let email: string;
-  let password: string;
-  $: errorMessage = "";
+  let email = "";
+  let password = "";
+  let errorMessage = "";
+
+  onMount(async () => {
+    const response = await fetch("/auth");
+    if (response.status === 200) {
+      errorMessage = "You are already logged in";
+      goto("/dashboard"); // redirect to login page
+    } else {
+      // handle the dashboard data
+    }
+  });
 
   const handleLoginUser = async () => {
     try {
-      await loginUser(email, password);
+      const response = await loginUser(email, password);
+      if (response.message === "Login successful") {
+        goto("/user/profile"); // Redirect to /user/profile
+      }
     } catch (e) {
-      const err = e as HttpError;
-      errorMessage = err.body.message;
+      if (e instanceof Error) {
+        errorMessage = e.message; // Display the error message
+      } else {
+        errorMessage = "An unexpected error occurred";
+      }
     }
   };
 </script>
