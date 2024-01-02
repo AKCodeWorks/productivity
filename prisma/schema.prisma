@@ -11,9 +11,24 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  password  String 
-  createdAt DateTime @default(now())
+  id            Int          @id @default(autoincrement())
+  orgId         Int        // Foreign key reference to Organization
+  email         String       @unique
+  firstName     String
+  lastName      String
+  organization  String
+  password      String
+  createdAt     DateTime     @default(now())
+
+  // Define the relation to Organization
+  Organization  Organization? @relation(fields: [orgId], references: [id])
+}
+
+model Organization {
+  id           Int        @id @default(autoincrement())
+  name         String     @unique
+  createdAt    DateTime   @default(now())
+
+  // Define the reverse relation to User
+  users        User[]
 }

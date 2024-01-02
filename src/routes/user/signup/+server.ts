@@ -8,8 +8,9 @@ import type { RequestHandler } from "./$types";
 export const POST: RequestHandler = async ({ request }) => {
   console.log("Trying to create user");
   try {
-    const { email, password, name } = await request.json();
-    if (!email || !password || !name) {
+    const { email, password, firstName, lastName, organization } =
+      await request.json();
+    if (!email || !password || !lastName || !firstName || !organization) {
       throw new Error("Email, password and name are required");
     }
 
@@ -20,8 +21,15 @@ export const POST: RequestHandler = async ({ request }) => {
     const user = await prisma.user.create({
       data: {
         email: email,
-        name: name,
-        password: hashedPassword, // Store the hashed password
+        firstName: firstName,
+        lastName: lastName,
+        password: hashedPassword,
+        organization: organization,
+        Organization: {
+          create: {
+            name: organization,
+          },
+        },
       },
     });
 
