@@ -5,7 +5,11 @@ const prisma = new PrismaClient();
 
 export async function GET() {
   try {
-    const users = await prisma.user.findMany();
+    const users = await prisma.user.findMany({
+      include: {
+        Organization: true, // Include the organization data
+      },
+    });
     return json(users);
   } catch (error) {
     return json({ error: "Failed to fetch users" }, { status: 500 });

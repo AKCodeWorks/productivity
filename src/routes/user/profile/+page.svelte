@@ -1,9 +1,17 @@
 <script lang="ts">
   import { onMount } from "svelte";
   type User = {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     password: string;
+    id: string;
+    organization: string;
+    Organization: Organization;
+  };
+
+  type Organization = {
+    name: string;
     id: string;
   };
 
@@ -42,14 +50,15 @@
     <ul>
       {#each users as user}
         <div class="container mx-auto flex gap-6 p-4">
-          <li class="p-4">Name: {user.name}</li>
+          <li class="p-4">Name: {user.firstName} {user.lastName}</li>
           <li class="p-4">Email: {user.email}</li>
           <li class="p-4">ID: {user.id}</li>
+          <li class="p-4">{user.Organization.name} {user.Organization.id}</li>
         </div>
 
         <li>Password: {user.password}</li>
         <button on:click={() => deleteUser(user.email)}>Delete</button>
-        <button on:click={() => console.log(user.email)}>Console Email</button>
+        <button on:click={() => console.log(user)}>Console User</button>
       {/each}
     </ul>
   {:else}
