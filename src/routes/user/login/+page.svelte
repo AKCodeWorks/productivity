@@ -2,6 +2,7 @@
   import { goto } from "$app/navigation";
   import { loginUser } from "$lib/login";
   import { onMount } from "svelte";
+  import userStore from "$lib/utils/stores/userStore";
 
   let email = "";
   let password = "";
@@ -9,6 +10,7 @@
 
   onMount(async () => {
     const response = await fetch("/auth");
+
     if (response.status === 200) {
       errorMessage = "You are already logged in";
       goto("/dashboard"); // redirect to login page
@@ -21,7 +23,8 @@
     try {
       const response = await loginUser(email, password);
       if (response.message === "Login successful") {
-        goto("/user/profile"); // Redirect to /user/profile
+        userStore.set(response.user);
+        goto("/dashboard"); // Redirect to /user/profile
       }
     } catch (e) {
       if (e instanceof Error) {
@@ -43,14 +46,18 @@
       <div class="mt-4 flex flex-col gap-2">
         <input
           bind:value={email}
+          on:keypress={(event) =>
+            event.key === "Enter" ? handleLoginUser() : null}
           class="border-b border-primary-blue-800 bg-transparent p-2 focus:outline-none"
           type="text"
           placeholder="E-Mail"
         />
         <input
           bind:value={password}
+          on:keypress={(event) =>
+            event.key === "Enter" ? handleLoginUser() : null}
           class="border-b border-primary-blue-800 bg-transparent p-2 focus:outline-none"
-          type="text"
+          type="password"
           placeholder="Password"
         />
       </div>

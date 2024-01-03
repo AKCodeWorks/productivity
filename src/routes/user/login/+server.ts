@@ -50,7 +50,7 @@ export const POST: RequestHandler = async ({ request }) => {
     return new Response(
       JSON.stringify({
         message: "Login successful",
-        user: { email: user.email, name: user.name },
+        user: { ...user, password: null },
       }),
       {
         headers: {

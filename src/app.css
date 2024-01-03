@@ -20,4 +20,7 @@
 }
 body {
   background-color: #13111a;
+  overflow: hidden;
+  max-width: 1800px;
+  margin-inline: auto;
 }

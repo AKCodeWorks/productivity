@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { goto } from "$app/navigation";
+
   let firstName: string;
   let lastName: string;
   let organization: string;
@@ -46,8 +48,11 @@
         "Content-Type": "application/json",
       },
     });
-
-    console.log(response);
+    if (response.status === 200) {
+      goto("/dashbaord");
+    } else {
+      errorMessage = "Something went wrong on our end. Please try again later.";
+    }
   };
 </script>
 

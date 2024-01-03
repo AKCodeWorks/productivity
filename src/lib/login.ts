@@ -1,3 +1,5 @@
+import userStore from "./utils/stores/userStore";
+
 export const loginUser = async (email: string, password: string) => {
   if (!email || !password) {
     throw new Error("Please enter an email and password");
@@ -14,8 +16,10 @@ export const loginUser = async (email: string, password: string) => {
       const errorData = await response.json();
       throw new Error(errorData.message || "An error occurred during login");
     }
+    const data = await response.json();
+    userStore.set(data);
 
-    return await response.json();
+    return data;
   } catch (e) {
     // Re-throwing the error to be handled by the caller
     throw e instanceof Error
