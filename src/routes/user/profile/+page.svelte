@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import userStore from "$lib/utils/stores/userStore";
   type User = {
     firstName: string;
     lastName: string;
@@ -55,7 +56,7 @@
           <li class="p-4">ID: {user.id}</li>
           <li class="p-4">{user.Organization.name} {user.Organization.id}</li>
         </div>
-
+        <button on:click={() => console.log($userStore)}>Console Store</button>
         <li>Password: {user.password}</li>
         <button on:click={() => deleteUser(user.email)}>Delete</button>
         <button on:click={() => console.log(user)}>Console User</button>
